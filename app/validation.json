@@ -1,0 +1,41 @@
+{
+  "windows_build": "native Windows x64 GUI executable; static C++ runtime; standard Windows DLL imports only",
+  "windows_gui_execution": "not run on a Windows machine in this environment",
+  "stock_runtime": {
+    "normal_controller_ids": [
+      139,
+      161,
+      139,
+      161
+    ],
+    "tab_category": 3,
+    "native_list_preserved": true,
+    "native_list_count": 68,
+    "selected_ids": [
+      139,
+      161
+    ],
+    "build_file_count_verified": 246,
+    "gameplay": "not tested for this new arbitrary-filter build; prior DLC18 test-clone matches remain separate evidence"
+  },
+  "dlc18_runtime": {
+    "normal_controller_ids": [
+      139,
+      161,
+      139,
+      161
+    ],
+    "tab_category": 3,
+    "native_list_preserved": true,
+    "native_list_count": 86,
+    "selected_ids": [
+      139,
+      161
+    ],
+    "build_file_count_verified": 246,
+    "gameplay": "not tested for this new arbitrary-filter build; prior DLC18 test-clone matches remain separate evidence"
+  },
+  "stock_preparation_tests": "passed: original and eighteen-slot options, NoModel filter bitmap, invalid IDs, original-overwrite refusal, SHA256 known vectors",
+  "incomplete_intake": "An older 207-file intake was missing edit/edit.pac; its failed startup is retained separately. The application rejects that missing required file. Complete 246-file stock input passed.",
+  "executable_sha256": "c2bca9bde53f75bd908f23bce05a4283ffda2341fa8da2832aef70d55ff0fa9c"
+}
