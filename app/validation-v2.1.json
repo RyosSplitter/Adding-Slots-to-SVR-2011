@@ -1,0 +1,8 @@
+{
+  "version": "2.1",
+  "change": "Support model/texture modifications without disabling executable, character-record or MENU compatibility checks.",
+  "tested": "Modified full 246-file input accepted; all original resource payload bytes preserved when adding ID108; unchanged model group preserved; occupied custom target and removed original resource rejected. Original single/multiple/all-151 activation tests still pass.",
+  "runtime_boundary": "Prior v2 normal controller/gameplay/save evidence applies to the unchanged stock activation path. The user-specific modified ISO was not available and has not been tested.",
+  "Windows_GUI": "Cross-compiled, not run on Windows here.",
+  "source_protection": "Core SHA256 and instruction guards retained; selected custom-resource collisions rejected; known baseline dormant 192 resources may be replaced only when original payload hashes match."
+}

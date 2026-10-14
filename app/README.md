@@ -1,4 +1,4 @@
-# SVR DLC Tab Manager v2 — Windows application
+# SVR DLC Tab Manager v2.1 — Windows application
 
 A native Windows x64 desktop application for SVR 2011 PSP **US ULUS10543 v1.00**. It turns selected unused identities into independent John Cena clones and enables their normal selection through **Downloaded Superstars**. It handles character records, ID/ordinal mappings, enable/unlock decisions, model resources, companion ARC directories and the menu route.
 
@@ -8,7 +8,7 @@ No PowerShell, Python, account token or manual file replacement is needed.
 
 1. Extract the entire application ZIP. Keep the `data` folder beside `SVR-DLC-Tab-Manager.exe`.
 2. Double-click the `.exe`.
-3. Browse to your **original stock, uncompressed US v1.00 ISO**. The previous experimental ISO and previously patched outputs are not supported inputs for activation.
+3. Browse to your **uncompressed US v1.00 ISO with supported original core files**. The previous experimental ISO and previously patched outputs are not supported inputs for activation.
 4. Choose a **new** output filename.
 5. Check the unused IDs you want activated. **316 is NoModel128**, for example.
 6. **Select 150 slots** chooses all 132 NoModel identities plus DLC IDs 51–68, leaving 69 spare. **Select all 151** includes ID 69 too. Individual selection is also supported.
@@ -26,15 +26,15 @@ There are **151 confirmed-unused candidates**: the 132 NoModel entries within 10
 
 This is intentional: an ID being absent from a menu does not prove it is unused. IDs 70–99 and other reserved/special domains are not certified activation candidates in this version.
 
-Unselected placeholders remain unchanged. Selecting a NoModel slot now performs its setup; it is **not merely an eligibility checkbox**, as in v1. The source model archives are hash-checked, so custom models are not silently overwritten. The original donor Cena/139 retains his records and resources, and a clone can coexist with him.
+Unselected placeholders remain unchanged. Selecting a NoModel slot now performs its setup; it is **not merely an eligibility checkbox**, as in v1. Model archives are checked structurally, and unselected resources are preserved. Model and texture edits are supported, including consistently updated resource directories and companion ARC entries. A selected slot that already contains custom resources is rejected so its wrestler is not silently overwritten. The original donor Cena/139 retains his records and resources, and a clone can coexist with him.
 
 ## Preservation and rollback
 
 The original ISO and savedata are never written. The patcher copies the ISO, appends modified files, updates primary/Joliet directory records and volume sizes, preserves file paths/capitalization, then reads back every embedded file. Unchanged game-file payloads must match exactly. Unselected compressed character records and model mappings are preserved; the originals of any dormant selected resource payloads also remain in the source ISO.
 
-Activation rejects unsupported executable/region/revision, changed core source archives, unsafe IDs, occupied output filenames, malformed archives, oversized directories and insufficient space. Failed builds remove incomplete outputs. Keep roughly 2 GB free for a full build and back up savedata before gameplay testing.
+Activation rejects unsupported executable/region/revision, changed executable/character metadata/MENU files, unsafe IDs, occupied output filenames, malformed archives, oversized directories and insufficient space. Failed builds remove incomplete outputs. Keep roughly 2 GB free for a full build and back up savedata before gameplay testing.
 
-A `.patch-report.txt` beside the new ISO records active IDs, mappings, executable addresses/file offsets, output hashes and rollback. To choose a different set, return to your original stock ISO and save another new output. To undo the patch, open your original ISO. Restore the savedata backup if you also want to undo test progress.
+A `.patch-report.txt` beside the new ISO records active IDs, mappings, executable addresses/file offsets, output hashes and rollback. To choose a different set, return to your retained source ISO and save another new output. To undo the patch, open your original ISO. Restore the savedata backup if you also want to undo test progress.
 
 The converter and Texture Viewer are not changed or required.
 
@@ -61,3 +61,7 @@ x86_64-w64-mingw32-g++ -std=c++17 -O2 -static -mwindows -municode main.cpp -o SV
 ```
 
 Keep the verified `data` folder from the application ZIP next to the executable. The Linux build is a research test runner; end users use the Windows GUI.
+
+## v2.1 compatibility change
+
+The broad whole-file hash rejection for ch.pac/ch2.pac/ch3.pac has been replaced with archive structure, key, extent, stock-resource-presence and companion mapping checks. Unselected model payloads and resource mappings are preserved. Executable, character-record and MENU compatibility checks remain; this does not bypass unsupported core changes. Modified Cena assets are used as the model donor from the input ISO. A modified model-archive fixture passed preservation tests; your particular modded ISO has not been tested here.

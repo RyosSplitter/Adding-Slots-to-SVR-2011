@@ -333,3 +333,9 @@ static const char* catalog[322]={
 "LUKE GALLOWS",
 };
 static const char* modelStockHashes[]={"cb8edee57d62729065d3f63676a73d6791f9171880376ab6323913450bd6a0bb","e92d16aec26d1cf7f4e330e6c87568801741b170f8c89ec093bc4d94a010c3b2"};
+
+static const char* stockModelDirectoryHashes[]={
+"b85b686d16747a74216d4b1d3ff4851a217eb858343efadf77c2c77d582e918b",
+"06768ecf18f972b459ce6fdeed271eed8d0b45f6882bde81a76e85a6f9198d87",
+"406e4e57739e0edb25136e19da3b2e94293b318bba49ee22d8600ed3c5795deb",
+};
