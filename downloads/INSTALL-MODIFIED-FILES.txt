@@ -1,0 +1,36 @@
+SVR 2011 PSP DLC18 — modified files only
+
+For US PSP ULUS10543 v1.00, tested in PPSSPP.
+
+This ZIP contains the six modified files from the tested eighteen-slot ISO.
+The folder structure shows the exact destination of every replacement.
+ch3.pac is not included because it was not changed.
+
+INSTALLATION (Windows, using an ISO editor such as UMDGen)
+1. Back up your original ISO and ULUS10543 savedata.
+2. Extract this ZIP to a folder. Open your original US ULUS10543 ISO in the editor.
+3. Replace the six files with the corresponding files under PSP_GAME in this ZIP.
+   Replace existing files at their exact paths; do not add another PSP_GAME folder.
+   Preserve all other files and the exact capitalization of directory/file names.
+   Replace both bin.pac AND menuPSP.bin. Do not replace only EBOOT.BIN.
+4. Save as a NEW uncompressed ISO. Do not overwrite the original.
+5. Open that new ISO in PPSSPP and boot normally, without loading an old savestate.
+   No cheats or DLC downloads are required.
+6. At wrestler selection, move along the bottom row past Divas to the rightmost
+   WWE icon labelled Downloaded Superstars. Cross enters; Up/Down selects
+   DLC TEST 51 through DLC TEST 68; Cross confirms; Circle returns.
+
+This creates eighteen independent test identities using John Cena assets and
+attributes, not eighteen finished custom wrestlers. Portraits remain silhouettes;
+in matches they use Cena models. Stock roster and 132 vacant slots are preserved.
+IDs 69 and 322 remain unchanged. The separate ID 323 research is not included.
+
+The exact six files were verified against the tested build before packaging.
+All eighteen test identities completed PPSSPP matches; the final in-game save
+reloaded successfully. Your locally rebuilt ISO has not itself been tested here.
+Physical PSP compatibility and a fresh save with no existing savedata are untested.
+
+ROLLBACK: use your original ISO. Restore your savedata backup to undo test progress.
+This ZIP does not include or install savedata. Original files remain separate.
+
+SHA256SUMS.txt verifies the included files; patch-manifest.json records changes.
