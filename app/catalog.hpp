@@ -332,3 +332,4 @@ static const char* catalog[322]={
 "NoModel132 (requires wrestler setup)",
 "LUKE GALLOWS",
 };
+static const char* modelStockHashes[]={"cb8edee57d62729065d3f63676a73d6791f9171880376ab6323913450bd6a0bb","e92d16aec26d1cf7f4e330e6c87568801741b170f8c89ec093bc4d94a010c3b2"};

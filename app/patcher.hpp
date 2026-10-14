@@ -65,8 +65,10 @@ inline Bytes encode(const Bytes& b){Bytes payload;for(size_t off=0;off<b.size();
 namespace dlc {
 struct Options{std::set<int> ids;bool install18=false;};
 struct Prepared{std::map<std::string,Bytes> replacements;bool base18;};
+#include "activation.hpp"
 inline Prepared prepare(Iso& iso,const fs::path& data,const Options& opt){
  require(iso.files.count("/PSP_GAME/USRDIR/PAC/EDIT/EDIT.PAC"),"Incomplete ISO: required edit/edit.pac is missing");
+ if(opt.install18)return activate(iso,data,opt);
  require(!opt.ids.empty(),"Select at least one ID");for(int id:opt.ids)require((id>=50&&id<=69)||(id>=100&&id<=321),"Allowed IDs: 50-69 and 100-321. ID 322 is reserved.");
  for(const auto& a:assets)require(sha(load(data/a.name))==a.patchedHash,"Application data changed: "+std::string(a.name));
  auto input=iso.file(assets[0].path);auto hash=sha(input);bool stock=hash==assets[0].stockHash, base18=hash==assets[0].patchedHash;
@@ -107,8 +109,15 @@ inline void patch(const fs::path& source,const fs::path& destination,const fs::p
   for(auto& row:iso.files){auto before=row.second;auto after=check.files.at(row.first);auto replacement=prepared.replacements.find(row.first);if(replacement!=prepared.replacements.end())require(check.file(row.first)==replacement->second,"Replacement extraction verification failed");else{require(before.sector==after.sector&&before.size==after.size,"Unchanged file was relocated");uint64_t offset=uint64_t(before.sector)*2048;for(uint32_t p=0;p<before.size;){auto n=std::min<uint32_t>(1024*1024,before.size-p);require(iso.read(offset+p,n)==check.read(offset+p,n),"Unchanged file content differs");p+=n;}}
    if(progress)progress(80+int(19*++index/iso.files.size()));}
   check.close();
-  std::ostringstream text;text<<"SVR DLC Tab Manager experimental build\nOriginal: "<<source.string()<<"\nNew ISO: "<<destination.string()<<"\nVerified files: "<<iso.files.size()<<"\nDLC filter IDs:";for(int id:opt.ids)text<<" "<<id;text<<"\nIncludes tested eighteen-slot bank: "<<(prepared.base18?"yes":"no")<<"\nOnly IDs already present in the native roster list can appear. This does not create missing models/records.\n";
-  text<<"Filter bitmap: VA 0x08FCEB00 (base+0x5500), 322 bytes\nFilter code: VA 0x08FCEE00 (base+0x5800), 44 bytes\nMENU filter hook: 0x08F58BB0 / offset 0x40D30\n";
+  std::ostringstream text;text<<"SVR DLC Tab Manager experimental build\nOriginal: "<<source.string()<<"\nNew ISO: "<<destination.string()<<"\nVerified files: "<<iso.files.size()<<"\nDLC filter IDs:";for(int id:opt.ids)text<<" "<<id;text<<"\nIndependent clone activation: "<<(opt.install18?"yes":"no")<<"\n";
+  if(opt.install18){
+   text<<"Owned bank VA: 0x08FC9600; size: 0x30000; end: 0x08FF9600\nDLC bitmap: VA 0x08FE9600; 322 bytes\n";
+   text<<"Mappings:";int extra=0;for(int id:opt.ids)text<<" ID "<<id<<" -> ordinal "<<(id>=100?id-100:252+extra++);text<<"\n";
+   auto elf=prepared.replacements.at("/PSP_GAME/SYSDIR/EBOOT.BIN");
+   for(uint32_t va:{0x08995158u,0x0899519cu,0x08995184u,0x08a01780u,0x08a01690u,0x08a01704u,0x08a017f0u,0x08994c68u,0x089915f8u,0x08995204u,0x08cc4a44u,0x089ff36cu,0x089fe68cu,0x089fe690u})text<<"ELF instruction VA 0x"<<std::hex<<va<<" file offset 0x"<<(va-0x088d8000+0x234)<<" word 0x"<<u32(elf,va-0x088d8000+0x234)<<std::dec<<"\n";
+   text<<"Selected records preserve each ID independently. No unselected record, original donor or save is edited.\n";
+  }else{text<<"Filter-only mode: only identities already present in the native roster list can appear.\n";}
+  text<<"MENU filter hook: 0x08F58BB0 / offset 0x40D30\n";
   for(auto& row:prepared.replacements){text<<row.first<<" SHA256 "<<sha(row.second)<<"\n";}
   text<<"Rollback: open your original ISO; restore your savedata backup to undo test progress. No save or original ISO is modified.\n";
   auto s=text.str();save(report,Bytes(s.begin(),s.end()));fs::rename(partial,destination);if(progress)progress(100);

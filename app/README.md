@@ -1,49 +1,63 @@
-# SVR DLC Tab Manager — Windows application
+# SVR DLC Tab Manager v2 — Windows application
 
-A native Windows x64 desktop application for SVR 2011 PSP **US ULUS10543 v1.00**.
-No PowerShell, Python, account token, or manual archive replacement is needed.
+A native Windows x64 desktop application for SVR 2011 PSP **US ULUS10543 v1.00**. It turns selected unused identities into independent John Cena clones and enables their normal selection through **Downloaded Superstars**. It handles character records, ID/ordinal mappings, enable/unlock decisions, model resources, companion ARC directories and the menu route.
+
+No PowerShell, Python, account token or manual file replacement is needed.
 
 ## Use
 
-1. Extract the entire application ZIP into a folder. Keep the `data` folder beside `SVR-DLC-Tab-Manager.exe`.
-2. Double-click `SVR-DLC-Tab-Manager.exe`.
-3. Browse to your original uncompressed `.iso`, then choose a **new** output filename.
-4. Check the IDs you want allowed in **Downloaded Superstars**. The list shows stock names and the 132 NoModel labels.
-5. Optionally select **Install eighteen tested Cena test slots**. This installs IDs 51–68 only when the six source files are unchanged stock inputs. The application refuses to overwrite custom changes when installing these slots.
-6. Click **Enable DLC tab & create patched ISO**. Wait for content verification to finish.
-7. Open the new ISO in PPSSPP. Boot normally instead of loading an older savestate.
-8. At wrestler selection, move along the bottom row past Divas to the rightmost WWE icon labelled **Downloaded Superstars**. Cross enters; Up/Down changes wrestler; Cross confirms; Circle exits.
+1. Extract the entire application ZIP. Keep the `data` folder beside `SVR-DLC-Tab-Manager.exe`.
+2. Double-click the `.exe`.
+3. Browse to your **original stock, uncompressed US v1.00 ISO**. The previous experimental ISO and previously patched outputs are not supported inputs for activation.
+4. Choose a **new** output filename.
+5. Check the unused IDs you want activated. **316 is NoModel128**, for example.
+6. **Select 150 slots** chooses all 132 NoModel identities plus DLC IDs 51–68, leaving 69 spare. **Select all 151** includes ID 69 too. Individual selection is also supported.
+7. Click **Activate selected slots & save new ISO**. Wait for independent file-content verification to finish.
+8. Boot the new ISO normally in PPSSPP. Do not load a savestate made with another build.
+9. In normal wrestler selection, move along the bottom row past Divas to the rightmost WWE icon labelled **Downloaded Superstars**. Cross enters; Up/Down chooses a clone; Cross confirms; Circle exits.
 
-The application is unsigned. Windows may show its usual unknown-publisher prompt. The source is included in the repository.
+Each activated identity is named **CLONE <ID>**, with Cena's model, attributes, profile and entrance defaults. Portrait previews remain silhouettes. These are functioning test-clone setups, not a collection of finished custom wrestlers. Replace their assets separately when creating your own wrestlers.
 
-## What choosing an ID means
+The executable is unsigned; Windows may show its usual unknown-publisher prompt. Source is available in this repository. The GUI executable was cross-compiled; its Windows GUI has not been run on a Windows machine in this environment.
 
-The checkboxes configure the native category filter. **They do not create missing wrestler models, independent metadata, entrances, or other assets, nor force locked/excluded entries into the shared roster list.** Only identities already registered in that list can appear. A NoModel slot such as **316 / NoModel128** still needs full wrestler setup. Merely supplying its model is not sufficient if its identity fields or enable state are still dormant. The application warns when NoModel entries are selected.
+## Which IDs can be activated?
 
-The optional eighteen-slot mode supplies the already-tested Cena clones and their independent records, so IDs 51–68 can appear without separate wrestler setup. Portraits for these clones remain silhouettes. Checking fewer of these IDs changes visibility in the DLC category; it does not delete their records or resources. The stock roster remains intact.
+There are **151 confirmed-unused candidates**: the 132 NoModel entries within 100–321 and the nineteen dormant DLC identities 51–69. The table includes all of them. Existing stock identities, Divas, NPCs, hidden named characters and CAW definitions are protected, even when a particular save does not currently show them in a menu. Chris Masters/50 is preserved. ID 322 is a menu sentinel and cannot be selected; separate ID 323 research remains unchanged.
 
-Supported selections: 50–69 and 100–321. ID 322 is a reserved menu sentinel and is rejected. ID 323 expansion research is unchanged and outside this application's supported range. Dormant ID 69 is not activated by the optional eighteen-slot installation.
+This is intentional: an ID being absent from a menu does not prove it is unused. IDs 70–99 and other reserved/special domains are not certified activation candidates in this version.
 
-Supported executable inputs: the original US v1.00 executable and the tested DLC18 executable. Custom asset edits can remain in place if the executable and MENU match a supported input and their companion overlay directory remains consistent. Unsupported executable/MENU modifications are rejected. To change the selection again, start from your retained original or the tested DLC18 ISO; do not feed this tool its own output in version 1.
+Unselected placeholders remain unchanged. Selecting a NoModel slot now performs its setup; it is **not merely an eligibility checkbox**, as in v1. The source model archives are hash-checked, so custom models are not silently overwritten. The original donor Cena/139 retains his records and resources, and a clone can coexist with him.
 
-## Preservation, verification and rollback
+## Preservation and rollback
 
-The original ISO and savedata are never written. The patcher copies the input ISO, appends changed files, updates matching primary/Joliet directory records and volume sizes, and independently reads back **every embedded file**. Unchanged game-file payloads must remain byte-for-byte identical. Paths and capitalization are preserved. Output/report collisions, insufficient space, invalid archives, unsupported builds and unsafe IDs are rejected. Failed builds remove their incomplete output.
+The original ISO and savedata are never written. The patcher copies the ISO, appends modified files, updates primary/Joliet directory records and volume sizes, preserves file paths/capitalization, then reads back every embedded file. Unchanged game-file payloads must match exactly. Unselected compressed character records and model mappings are preserved; the originals of any dormant selected resource payloads also remain in the source ISO.
 
-A `.patch-report.txt` beside the new ISO records selected IDs, file hashes, filter locations and rollback. Keep enough free space for another full ISO (roughly 1.6 GB) and back up savedata before gameplay tests. Rollback means reopening your original ISO; restore the savedata backup if you also want to undo test progress.
+Activation rejects unsupported executable/region/revision, changed core source archives, unsafe IDs, occupied output filenames, malformed archives, oversized directories and insufficient space. Failed builds remove incomplete outputs. Keep roughly 2 GB free for a full build and back up savedata before gameplay testing.
 
-## Validation
+A `.patch-report.txt` beside the new ISO records active IDs, mappings, executable addresses/file offsets, output hashes and rollback. To choose a different set, return to your original stock ISO and save another new output. To undo the patch, open your original ISO. Restore the savedata backup if you also want to undo test progress.
 
-The shared patching engine was compiled and run on Linux using the same C++ source as the Windows application. Custom Cena/Orton filtering was tested in PPSSPP with normal controller navigation: 139 → 161 → 139 → 161; returning from DLC mode preserved the shared roster list. Both original-stock and tested-DLC18 inputs were independently rebuilt and all 246 file payloads verified. The Windows x64 GUI executable was cross-compiled and checked for standard Windows-only DLL dependencies; the GUI itself has not been run on a Windows machine here.
+The converter and Texture Viewer are not changed or required.
 
-This is an experimental menu/configuration utility. The prior DLC18 build has completed-match and regular save/reload evidence for all eighteen clones; that evidence does not certify every selectable ID, mode or custom wrestler in outputs from this tool. Physical PSP, CSO, other regions/revisions and loading older savestates are not supported/validated.
+## Implementation notes
+
+NoModel identities keep their existing regular ordinals `ID - 100`. Dormant DLC identities use new ordinals beginning at 252, after the original 222 regular and 30 CAW/special entries. Only the two verified native MENU constructors receive extra iterations for the chosen DLC identities. The native selection buffers retain their 322-entry capacity; the full test contains 219 rows: 68 baseline selectable entries plus 151 clones.
+
+A private ELF LOAD bank at `0x08FC9600` reserves `0x30000` bytes for independent name/profile/state records and guarded dispatchers. Both heap-address high halves are adjusted so allocation starts after `0x08FF9600`. Selected DAT and runtime name records receive their own self ID, duplicate-identity field and unique sort key. Their model resources are copied into EMD/ch.pac, EMD2/ch2.pac or EMD3/ch3.pac according to the verified packed-key boundaries 13000 and 16000. Both MENU copies and companion ARC directories stay consistent.
+
+The full directory exceeds the original startup ARC allocation of `0x18400` bytes. The allocation is increased to `0x20000` through instructions at `0x089FE68C` and `0x089FE690`; the builder rejects a directory that would exceed that reserved buffer. The first broad experimental build exposed this overflow and is retained as failed evidence, not a successful capacity result.
+
+## Validation boundaries
+
+The shared C++ engine builds and independently verifies all 246 game-file payloads. Static audits confirm 151 independent runtime identities, self/canonical fields, unique sort keys, preserved unselected records and 755 Cena resource payloads. Normal PPSSPP controller navigation visits all 151 IDs, wraps 320 → 51 and back, and preserves the exact stock 68-ID list and main-grid cell table.
+
+NoModel128/316 was normally selected, launched against the unchanged original Cena/139, rendered its own packed resource 31604, completed a match and displayed Save Successful. Broader gameplay and fresh-save-load evidence is recorded in `validation-v2.json`. Preview traversal alone does **not** certify gameplay, every attire or persistence for every identity. Physical PSP, CSO, other regions, wireless/editor modes and older savestates remain unvalidated.
 
 ## Build from source
 
-Using a MinGW-w64 C++17 toolchain:
+With a MinGW-w64 C++17 toolchain:
 
 ```
 x86_64-w64-mingw32-g++ -std=c++17 -O2 -static -mwindows -municode main.cpp -o SVR-DLC-Tab-Manager.exe -lcomctl32 -lcomdlg32
 ```
 
-Place the verified application `data` folder next to the executable. Its supported input/output hashes are in `catalog.hpp`; application data is checked before use. The Linux executable is a research test runner; end users use the Windows GUI.
+Keep the verified `data` folder from the application ZIP next to the executable. The Linux build is a research test runner; end users use the Windows GUI.
