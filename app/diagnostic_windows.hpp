@@ -1,0 +1,18 @@
+#pragma once
+#include <winhttp.h>
+#include "diagnostic.hpp"
+namespace svrdiag {
+struct Handle{HINTERNET h=nullptr;~Handle(){if(h)WinHttpCloseHandle(h);}Handle()=default;Handle(const Handle&)=delete;};
+class WindowsSocket{
+ Handle session,connection,requestHandle,socket;unsigned ticket=0;std::ofstream protocol;
+ void check(bool ok,const char* action){if(!ok)throw std::runtime_error(std::string(action)+" failed (Windows error "+std::to_string(GetLastError())+"). Enable PPSSPP's local WebSocket debugger and check its port.");}
+public:
+ WindowsSocket(unsigned short port,const dlc::fs::path& path):protocol(path){
+  dlc::require(bool(protocol),"Cannot create debugger protocol log");session.h=WinHttpOpen(L"SVR-DLC-Diagnostics/1",WINHTTP_ACCESS_TYPE_NO_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0);check(session.h,"WinHttpOpen");check(WinHttpSetTimeouts(session.h,3000,3000,5000,5000),"SetTimeouts");connection.h=WinHttpConnect(session.h,L"127.0.0.1",port,0);check(connection.h,"Connect");requestHandle.h=WinHttpOpenRequest(connection.h,L"GET",L"/debugger",nullptr,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,0);check(requestHandle.h,"OpenRequest");check(WinHttpSetOption(requestHandle.h,WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET,nullptr,0),"EnableWebSocket");check(WinHttpAddRequestHeaders(requestHandle.h,L"Sec-WebSocket-Protocol: debugger.ppsspp.org\r\n",DWORD(-1),WINHTTP_ADDREQ_FLAG_ADD),"Subprotocol");check(WinHttpSendRequest(requestHandle.h,WINHTTP_NO_ADDITIONAL_HEADERS,0,WINHTTP_NO_REQUEST_DATA,0,0,0),"SendRequest");check(WinHttpReceiveResponse(requestHandle.h,nullptr),"ReceiveResponse");DWORD status=0,n=sizeof(status);check(WinHttpQueryHeaders(requestHandle.h,WINHTTP_QUERY_STATUS_CODE|WINHTTP_QUERY_FLAG_NUMBER,WINHTTP_HEADER_NAME_BY_INDEX,&status,&n,WINHTTP_NO_HEADER_INDEX),"HTTP status");dlc::require(status==101,"PPSSPP did not upgrade debugger WebSocket (HTTP "+std::to_string(status)+")");socket.h=WinHttpWebSocketCompleteUpgrade(requestHandle.h,0);check(socket.h,"WebSocket upgrade");DWORD timeout=5000;check(WinHttpSetOption(socket.h,WINHTTP_OPTION_RECEIVE_TIMEOUT,&timeout,sizeof(timeout)),"Receive timeout");
+ }
+ Json call(const std::string& event,Json args){args["event"]=event;args["ticket"]=++ticket;auto out=args.dump();protocol<<Json{{"direction","request"},{"data",args}}.dump()<<'\n';protocol.flush();auto error=WinHttpWebSocketSend(socket.h,WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE,out.data(),out.size());dlc::require(error==0,"Debugger WebSocket send error "+std::to_string(error));
+  auto end=std::chrono::steady_clock::now()+std::chrono::seconds(15);while(std::chrono::steady_clock::now()<end){std::string message;WINHTTP_WEB_SOCKET_BUFFER_TYPE type;do{char buffer[16384];DWORD received=0;error=WinHttpWebSocketReceive(socket.h,buffer,sizeof(buffer),&received,&type);dlc::require(error==0,"Debugger receive error "+std::to_string(error));dlc::require(type!=WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE,"PPSSPP closed debugger connection");message.append(buffer,received);dlc::require(message.size()<=2*1024*1024,"Oversized debugger response");}while(type==WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE);dlc::require(type==WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE,"Expected JSON debugger message");auto response=Json::parse(message);protocol<<Json{{"direction","response"},{"data",response}}.dump()<<'\n';protocol.flush();if(response.value("ticket",0u)==ticket||(response.value("event","")==event&&(event=="cpu.resume"||event=="cpu.stepping"))){dlc::require(response.value("event","")!="error",response.dump());return response;}}
+  throw std::runtime_error("Timed out waiting for debugger response");
+ }
+};
+}

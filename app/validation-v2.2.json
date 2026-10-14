@@ -1,0 +1,62 @@
+{
+  "release": "v2.2 runtime diagnostics",
+  "Windows_cross_compile": "passed",
+  "Windows_GUI_and_WinHTTP_execution": "unrun",
+  "guard_tests": {
+    "healthy": {
+      "passed": true,
+      "requests": 37,
+      "attempted_adds": 7,
+      "removed": 7,
+      "error": null
+    },
+    "wrong-game": {
+      "passed": true,
+      "requests": 2,
+      "attempted_adds": 0,
+      "removed": 0,
+      "error": "Only running ULUS10543 revision 1.00 is supported"
+    },
+    "wrong-fingerprint": {
+      "passed": true,
+      "requests": 7,
+      "attempted_adds": 0,
+      "removed": 0,
+      "error": "Expected MENU cursor routine is not loaded; refusing breakpoints"
+    },
+    "existing-breakpoint": {
+      "passed": true,
+      "requests": 14,
+      "attempted_adds": 0,
+      "removed": 0,
+      "error": "Existing breakpoint conflicts; remove it yourself before capture"
+    },
+    "add-failure": {
+      "passed": true,
+      "requests": 23,
+      "attempted_adds": 2,
+      "removed": 1,
+      "error": "{\"event\":\"error\",\"message\":\"Injected failure before second breakpoint installation\"}"
+    }
+  },
+  "patch_engine_unchanged": true,
+  "Linux_left_player_normal_navigation": {
+    "tile_focus": true,
+    "Downloaded_Superstars_label": true,
+    "category": 3,
+    "clone_preview": 51,
+    "return_to_roster": true,
+    "new_full_match_test": false
+  },
+  "Linux_diagnostic_engine": {
+    "loaded_instruction_comparison": true,
+    "availability_breakpoint": true,
+    "player_and_list_snapshots": true,
+    "cleanup": true,
+    "full_navigation_breakpoint_coverage": "unvalidated; missing hits explicitly reported"
+  },
+  "Windows_cause": "unknown; failing-session runtime capture required",
+  "checkbox": "not added; separate from corrective patch",
+  "vendor_json_version": "3.11.3",
+  "vendor_json_SHA256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+}

@@ -65,3 +65,7 @@ Keep the verified `data` folder from the application ZIP next to the executable.
 ## v2.1 compatibility change
 
 The broad whole-file hash rejection for ch.pac/ch2.pac/ch3.pac has been replaced with archive structure, key, extent, stock-resource-presence and companion mapping checks. Unselected model payloads and resource mappings are preserved. Executable, character-record and MENU compatibility checks remain; this does not bypass unsupported core changes. Modified Cena assets are used as the model donor from the input ISO. A modified model-archive fixture passed preservation tests; your particular modded ISO has not been tested here.
+
+## v2.2 runtime diagnostic addition
+
+See [DIAGNOSTICS.md](DIAGNOSTICS.md). This adds local PPSSPP evidence capture without changing the activation engine. The reported Windows navigation failure is unresolved; Linux tests do not certify Windows behavior. The DLC on/off checkbox remains separate from this diagnostic work.
